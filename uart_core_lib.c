@@ -21,12 +21,9 @@ UART_T uart_init(uint32_t baseadd)
   return uart;
 }
 
-uint16_t printUartAdd(uint32_t address)
+uint16_t UartRegister(uint32_t address)
 {
-  uint16_t res = alt_read_hword(address);
-  printf("%i\n", res);
-
-  return res;
+  return alt_read_hword(address);
 }
 
 
@@ -35,23 +32,36 @@ void setBaud(UART_T * uart_p, uint32_t clock_frequency, uint32_t baudrate)
   // Formula segun
   // Embedded Peripherals IP User Guide -  UART Core
   float divisor = round((float)clock_frequency/(float)baudrate + 0.5f);
-  alt_write_hword(uart_p->DIVISOR, (uint32_t)divisor);
+  alt_write_hword(uart_p->DIVISOR, (uint16_t)divisor);
 }
 
 void checkUartRegisters(UART_T * uart_p)
 {
-  printf("%s ", "rxdata:");
-  printUartAdd(uart_p->RXDATA);
-  printf("%s ", "txdata:");
-  printUartAdd(uart_p->TXDATA);
-  printf("%s ", "status:");
-  printUartAdd(uart_p->STATUS);
-  printf("%s ", "control:");
-  printUartAdd(uart_p->CONTROL);
-  printf("%s ", "divisor:");
-  printUartAdd(uart_p->DIVISOR);
-  printf("%s ", "end of packet:");
-  printUartAdd(uart_p->ENDOFPACK);
+  printf("%s\n", "*******************************");
+  printf("%s ", "RX Data:");
+  printf("%i\n", UartRegister(uart_p->RXDATA));
+  printf("%s ", "TX Data:");
+  printf("%i\n", UartRegister(uart_p->TXDATA));
+  printf("%s ", "Status:");
+  uint16_t status = UartRegister(uart_p->STATUS);
+  printf("%i\n", status);
+  printf("%s ", "Exception:");
+  printf("%i\n", BIT(status, 8));
+  printf("%s ", "ROE:");
+  printf("%i\n", BIT(status, 3));
+  printf("%s ", "TOE:");
+  printf("%i\n", BIT(status, 4));
+  printf("%s ", "Break:");
+  printf("%i\n", BIT(status, 2));
+  printf("%s ", "Frame Error:");
+  printf("%i\n", BIT(status, 1));
+  printf("%s\n", "*******************************");
+  // printf("%s ", "control:");
+  // printUartAdd(uart_p->CONTROL);
+  // printf("%s ", "divisor:");
+  // printUartAdd(uart_p->DIVISOR);
+  // printf("%s ", "end of packet:");
+  // printUartAdd(uart_p->ENDOFPACK);
 }
 
 void resetStatus(UART_T * uart_p)

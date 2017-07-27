@@ -14,7 +14,7 @@ struct UART_S {
 };
 
 UART_T uart_init(uint32_t baseadd);
-uint16_t printUartAdd(uint32_t address);
+uint16_t UartRegister(uint32_t address);
 void checkUartRegisters(UART_T * uart_p);
 void resetStatus(UART_T * uart_p);
 void setBaud(UART_T * uart_p, uint32_t clock_frequency, uint32_t baudrate);
