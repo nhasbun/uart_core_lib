@@ -146,25 +146,18 @@ void * activarRecepcion_aux(void * ptr)
   setBufferSize(uart_p, uart_p->buffer_size); // crea malloc
   // si el usuario no lo ha hecho
   uart_p->buffer_count = 0;
- 
+  uint8_t * posicionInicial = uart_p->buffer_pointer_writing;
+
+
   while(uart_p->thread_run) {
     if(checkRxdata(uart_p)) {
       *(uart_p->buffer_pointer_writing) = recibirChar(uart_p);
       uart_p->buffer_pointer_writing++;
-      uart_p->buffer_count++;
-      if (uart_p->buffer_count%100 == 0) {
-        uint16_t status = uartRegister(uart_p->STATUS);
-        resetStatus(uart_p);
-        bool exception = BIT(status, 8);
-        enviarChar(uart_p, (uint8_t)exception);
-        if(exception) {
-          printf("%s\n", "**exception**");
-          uart_p->buffer_count = uart_p->buffer_count - 100;
-          uart_p->buffer_pointer_writing = uart_p->buffer_pointer_writing - 100;
-        }
-      }
     }
   }
+
+  uart_p->buffer_count = 
+  (uint32_t)(uart_p->buffer_pointer_writing) - (uint32_t)posicionInicial;
   return NULL;
 }
 
