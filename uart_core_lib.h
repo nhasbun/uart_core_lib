@@ -2,6 +2,8 @@
 #include <pthread.h>
 #include <fcntl.h> // open
 
+#define BIT(x,n) (((x) >> (n)) & 1)
+
 typedef struct UART_S UART_T;
 
 struct UART_S {

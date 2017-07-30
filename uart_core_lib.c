@@ -6,8 +6,6 @@
 #include "socal/hps.h" // para BASEADD
 #include "uart_core_lib.h"
 
-#define BIT(x,n) (((x) >> (n)) & 1)
-
 // INITIAL CONFIG
 
 UART_T uart_init(uint32_t baseadd)
@@ -32,7 +30,7 @@ void setBaud(UART_T * uart_p, uint32_t clock_frequency, uint32_t baudrate)
 {
   // Formula segun
   // Embedded Peripherals IP User Guide -  UART Core
-  float divisor = floor((float)clock_frequency/(float)baudrate + 0.5f);
+  float divisor = round((float)clock_frequency/(float)baudrate + 0.5f);
   alt_write_hword(uart_p->DIVISOR, (uint16_t)divisor);
 }
 
@@ -147,7 +145,6 @@ void * activarRecepcion_aux(void * ptr)
   // si el usuario no lo ha hecho
   uart_p->buffer_count = 0;
   uint8_t * posicionInicial = uart_p->buffer_pointer_writing;
-
 
   while(uart_p->thread_run) {
     if(checkRxdata(uart_p)) {
